@@ -97,4 +97,20 @@ test.describe("Tests", () => {
     await loginButton.click();
     await expect(page.locator('form p', { hasText: 'Your email or password is incorrect!' })).toBeVisible();
   })
+
+  test("Logout user", async ({ page }) => {
+    await expect(page.getByRole('heading', { name: 'AutomationExercise' })).toBeVisible();
+    await (page.getByRole('link', { name: ' Signup / Login' })).click();
+    await expect(page.getByRole('heading', { name: 'Login to your account' })).toBeVisible();
+    const emailInputField = page.locator("form[action = '/login'] input[type = 'email']");
+    await emailInputField.fill("aksana112@gmail.com");
+    const passwordInputField = page.locator("form[action = '/login'] input[type = 'password']");
+    await passwordInputField.fill("12345");
+    const loginButton = page.locator("form[action = '/login'] button");
+    await loginButton.click();
+    const loggedInText = page.locator('.navbar-nav li:last-child a');
+    await expect(loggedInText).toHaveText('Logged in as Aksana');
+    const logoutButton = page.locator('a[href="/logout"]');
+    await logoutButton.click();
+  })
 });
