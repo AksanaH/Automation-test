@@ -79,10 +79,22 @@ test.describe("Tests", () => {
     const loginButton = page.locator("form[action = '/login'] button");
     await loginButton.click();
     const loggedInText = page.locator('.navbar-nav li:last-child a');
-    await expect(loggedInText).toHaveText('Logged in as Aksana Hlebik')
+    await expect(loggedInText).toHaveText('Logged in as Aksana')
     const deleteAccountButton = page.locator('.navbar-nav li:nth-child(5)');
     await deleteAccountButton.click();
-    await expect(page.locator('h2 b')).toHaveText('ACCOUNT DELETED!');
+    await expect(page.locator('h2[data-qa="account-deleted"]')).toHaveText('Account Deleted!');
+  })
 
+  test("Login User with incorrect email and password", async ({ page }) => {
+    await expect(page.getByRole('heading', { name: 'AutomationExercise' })).toBeVisible();
+    await (page.getByRole('link', { name: ' Signup / Login' })).click();
+    await expect(page.getByRole('heading', { name: 'Login to your account' })).toBeVisible();
+    const emailInputField = page.locator("form[action = '/login'] input[type = 'email']");
+    await emailInputField.fill("aksana1122@gmail.com");
+    const passwordInputField = page.locator("form[action = '/login'] input[type = 'password']");
+    await passwordInputField.fill("123456");
+    const loginButton = page.locator("form[action = '/login'] button");
+    await loginButton.click();
+    await expect(page.locator('form p', { hasText: 'Your email or password is incorrect!' })).toBeVisible();
   })
 });
