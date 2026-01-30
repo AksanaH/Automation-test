@@ -113,4 +113,20 @@ test.describe("Tests", () => {
     const logoutButton = page.locator('a[href="/logout"]');
     await logoutButton.click();
   })
+
+  test("Register User with existing email", async ({ page }) => {
+    await expect(page.getByRole('heading', { name: 'AutomationExercise' })).toBeVisible();
+    await (page.getByRole('link', { name: ' Signup / Login' })).click();
+    await expect(page.getByRole('heading', { name: 'New User Signup!' })).toBeVisible();
+    const nameInputSignUpField = page.locator("form[action = '/signup'] input[name = 'name']");
+    await nameInputSignUpField.fill("Aksana");
+    const emailInputSignUpField = page.locator("form[action = '/signup'] input[name = 'email']");
+    await emailInputSignUpField.fill("aksana112@gmail.com");
+    const signUpButton = page.locator("form[action = '/signup'] button");
+    await signUpButton.click();
+    await expect(page.locator('form p', { hasText: 'Email Address already exist!' })).toBeVisible();
+
+  })
+
+
 });
