@@ -161,6 +161,15 @@ test.describe("Tests", () => {
     await page.locator('a.btn.btn-success', { hasText: "Home" }).click();
     await expect(page).toHaveURL("/");
   });
+
+  test("Verify Test Cases Page", async ({ page }) => {
+    await expect(page.getByRole('heading', { name: 'AutomationExercise' })).toBeVisible();
+    await page.getByRole('button', { name: "Test Cases" }).click();
+    await expect(page).toHaveURL('https://www.automationexercise.com/test_cases');
+  });
+
+
+
 })
 
 
