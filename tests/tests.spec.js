@@ -2,6 +2,10 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Tests", () => {
   test.beforeEach(async ({ page }) => {
+    // page.on('dialog', async (d) => {
+    //   console.log('Dialog:', d.type(), d.message());
+    //   await d.accept(); // presses OK
+    // });
     await page.goto("/");
   })
   test("verify page title", async ({ page }) => {
@@ -128,5 +132,38 @@ test.describe("Tests", () => {
 
   })
 
+  test("Contact Us Form", async ({ page }) => {
+    await expect(page.getByRole('heading', { name: 'AutomationExercise' })).toBeVisible();
+    const contactUsButton = page.locator('a[href="/contact_us"]');
+    await contactUsButton.click();
+    await expect(page.getByRole('heading', { name: 'Get In Touch' })).toBeVisible();
+    const nameInput = page.locator('input[name="name"]');
+    await nameInput.fill("Aksana Hlebik");
+    const emailInputField = page.locator("form[action = '/contact_us'] input[name = 'email']");
+    await emailInputField.fill("aksana112@gmail.com");
+    const subjectInputField = page.locator("form[action = '/contact_us'] input[name = 'subject']");
+    await subjectInputField.fill("Test Case");
+    const messageInputField = page.locator("form[action = '/contact_us'] textarea[name = 'message']");
+    await messageInputField.fill("I need more Test Cases");
+    await page.locator('input[name="upload_file"]').setInputFiles('tests/fixtures/TC_1.png');
 
-});
+    page.once('dialog', async dialog => {
+      console.log('Dialog text:', dialog.message());
+      await dialog.accept(); // presses OK
+    });
+
+    await page.locator('input[type="submit"]').click();
+
+    await expect(
+      page.locator('#contact-page').getByText('Success! Your details have been submitted successfully.')
+    ).toBeVisible();
+
+    await page.locator('a.btn.btn-success', { hasText: "Home" }).click();
+    await expect(page).toHaveURL("/");
+  });
+
+
+
+})
+
+
