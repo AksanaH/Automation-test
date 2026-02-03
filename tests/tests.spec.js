@@ -1,13 +1,11 @@
 import { test, expect } from "@playwright/test";
+import path from "node:path";
 
 test.describe("Tests", () => {
   test.beforeEach(async ({ page }) => {
-    // page.on('dialog', async (d) => {
-    //   console.log('Dialog:', d.type(), d.message());
-    //   await d.accept(); // presses OK
-    // });
     await page.goto("/");
-  })
+  });
+
   test("verify page title", async ({ page }) => {
     const title = await page.title();
     console.log(title);
@@ -145,25 +143,24 @@ test.describe("Tests", () => {
     await subjectInputField.fill("Test Case");
     const messageInputField = page.locator("form[action = '/contact_us'] textarea[name = 'message']");
     await messageInputField.fill("I need more Test Cases");
-    await page.locator('input[name="upload_file"]').setInputFiles('tests/fixtures/TC_1.png');
 
-    page.once('dialog', async dialog => {
-      console.log('Dialog text:', dialog.message());
-      await dialog.accept(); // presses OK
-    });
+    const fileInput = page.locator('input[type="file"][name="upload_file"]');
+    const filePath = path.resolve("tests/fixtures/TC_1.png");
+    await fileInput.setInputFiles(filePath);
+    await expect(fileInput).toHaveValue(/TC_1\.png$/);
+
+    page.once("dialog", d => d.accept());
 
     await page.locator('input[type="submit"]').click();
 
     await expect(
-      page.locator('#contact-page').getByText('Success! Your details have been submitted successfully.')
-    ).toBeVisible();
+      page.locator('div.status.alert.alert-success')
+        .filter({ hasText: 'Success! Your details have been submitted successfully.' })
+    ).toHaveText('Success! Your details have been submitted successfully.');
 
     await page.locator('a.btn.btn-success', { hasText: "Home" }).click();
     await expect(page).toHaveURL("/");
   });
-
-
-
 })
 
 
