@@ -168,8 +168,58 @@ test.describe("Tests", () => {
     await expect(page).toHaveURL('https://www.automationexercise.com/test_cases');
   });
 
+  test("Verify All Products and product detail page", async ({ page }) => {
+    await expect(page.getByRole('heading', { name: 'AutomationExercise' })).toBeVisible();
+    const productsButton = page.locator('a[href="/products"]');
+    await productsButton.click();
 
+
+    // If ad hijacked the page, recover and ensure /products
+    for (let i = 0; i < 3; i++) {
+      // vignette detected in URL
+      if (page.url().includes("google_vignette")) {
+        await page.goBack();
+        await page.waitForTimeout(300);
+        await page.locator('a[href="/products"]').click();
+        continue;
+      }
+
+      // If we're already on products, break
+      if (page.url().includes("/products")) break;
+
+      // otherwise wait a bit and try again
+      await page.waitForTimeout(300);
+    }
+
+    // Now force correct page
+    await expect(page).toHaveURL(/\/products/);
+
+    // Assert heading
+    await expect(page.getByRole('heading', { name: /All Products/i })).toBeVisible();
+
+    // await expect(page.getByRole('heading', { name: 'All Products' })).toBeVisible();
+    await expect(page.locator('.features_items')).toBeVisible();
+    await page.locator('.choose a').first().click();
+    await expect(page).toHaveURL('https://www.automationexercise.com/product_details/1');
+
+    // Product name
+    await expect(page.locator('.product-information h2')).toBeVisible();
+
+    // Category
+    await expect(page.locator('.product-information p').filter({ hasText: 'Category:' })).toBeVisible();
+
+    // Price
+    await expect(page.locator('.product-information span span')).toBeVisible();
+
+    // Availability
+    await expect(page.locator('.product-information p').filter({ hasText: 'Availability:' })).toBeVisible();
+
+    // Condition
+    await expect(page.locator('.product-information p').filter({ hasText: 'Condition:' })).toBeVisible();
+
+    // Brand
+    await expect(page.locator('.product-information p').filter({ hasText: 'Brand:' })).toBeVisible();
+  });
 
 })
-
 
