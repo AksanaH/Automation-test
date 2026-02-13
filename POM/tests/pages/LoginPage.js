@@ -25,5 +25,9 @@ export class LoginPage extends BasePage {
         await this.loginButton.click();
     }
 
+    async assertLoginErrorVisible() {
+        await expect(this.loginError).toBeVisible({ timeout: 15000 });
+    }
+
 
 }
