@@ -1,37 +1,37 @@
-import { test } from "@playwright/test";
-import { HomePage } from "../pages/HomePage";
-import { LoginPage } from "../pages/LoginPage";
-import { LoggedInPage } from "../pages/LoggedInPage";
+import {test} from "@playwright/test";
+import {HomePage} from "../pages/HomePage";
+import {LoginPage} from "../pages/LoginPage";
+import {LoggedInPage} from "../pages/LoggedInPage";
 
 test.describe("Login user", () => {
-    test.beforeEach(async ({ page }) => {
-        await page.goto("/");
-    });
+  test.beforeEach(async ({page}) => {
+    await page.goto("/");
+  });
 
-    test("Login user with correct email and password", async ({ page }) => {
-        const home = new HomePage(page);
-        const login = new LoginPage(page);
-        const loggedIn = new LoggedInPage(page);
+  test("Login user with correct email and password", async ({page}) => {
+    const home = new HomePage(page);
+    const login = new LoginPage(page);
+    const loggedIn = new LoggedInPage(page);
 
-        await home.assertLoaded();
-        await home.openSignupLogin();
+    await home.assertLoaded();
+    await home.openSignupLogin();
 
-        await login.assertLoaded();
-        await login.login("aksana112@gmail.com", "12345");
+    await login.assertLoaded();
+    await login.login("aksana112@gmail.com", "12345");
 
-        await loggedIn.assertLoggedInAs("Aksana");
-    });
+    await loggedIn.assertLoggedInAs("Aksana");
+  });
 
-    test("Login user with incorrect email and password", async ({ page }) => {
-        const home = new HomePage(page);
-        const login = new LoginPage(page);
+  test("Login user with incorrect email and password", async ({page}) => {
+    const home = new HomePage(page);
+    const login = new LoginPage(page);
 
-        await home.assertLoaded();
-        await home.openSignupLogin();
+    await home.assertLoaded();
+    await home.openSignupLogin();
 
-        await login.assertLoaded();
-        await login.login("wrong_email@test.com", "wrong_password");
+    await login.assertLoaded();
+    await login.login("wrong_email@test.com", "wrong_password");
 
-        await login.assertLoginErrorVisible();
-    });
+    await login.assertLoginErrorVisible();
+  });
 });
