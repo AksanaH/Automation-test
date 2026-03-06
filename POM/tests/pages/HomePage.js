@@ -11,6 +11,7 @@ export class HomePage extends BasePage {
     this.subscriptionArrowBtn = page.locator("#subscribe");
     this.subscriptionSuccess = page.locator("#success-subscribe");
     this.cartLink = page.getByRole("link", {name: "Cart"});
+    this.contactUsButton = page.locator('a[href="/contact_us"]');
   }
 
   async assertLoaded() {
@@ -44,5 +45,9 @@ export class HomePage extends BasePage {
 
   async openCart() {
     await this.cartLink.click();
+  }
+
+  async openContactUs() {
+    await this.contactUsButton.click();
   }
 }
