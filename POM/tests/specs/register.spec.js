@@ -29,4 +29,15 @@ test.describe("Register", () => {
 
     await created.assertAccountCreatedVisible();
   });
+
+  test("register user with existing email", async ({page}) => {
+    const home = new HomePage(page);
+    const login = new LoginPage(page);
+
+    await home.assertLoaded();
+    await home.openSignupLogin();
+    await login.assertSignupBlockVisible();
+    await login.signup("Aksana", "aksana112@gmail.com");
+    await login.assertEmailAlreadyExistsError();
+  });
 });

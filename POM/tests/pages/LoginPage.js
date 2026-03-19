@@ -19,6 +19,8 @@ export class LoginPage extends BasePage {
     this.signupNameInput = page.locator("form[action='/signup'] input[name='name']");
     this.signupEmailInput = page.locator("form[action='/signup'] input[name='email']");
     this.signupButton = page.locator("form[action='/signup'] button");
+    this.logoutButton = page.locator("a[href='/logout']");
+    this.emailAlreadyExistsError = page.locator("form p", {hasText: "Email Address already exist!"});
   }
 
   async assertLoaded() {
@@ -42,5 +44,13 @@ export class LoginPage extends BasePage {
     await this.signupNameInput.fill(name);
     await this.signupEmailInput.fill(email);
     await this.signupButton.click();
+  }
+
+  async logout() {
+    await this.logoutButton.click();
+  }
+
+  async assertEmailAlreadyExistsError() {
+    await expect(this.emailAlreadyExistsError).toBeVisible();
   }
 }
